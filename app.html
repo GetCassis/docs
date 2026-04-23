@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cassis | Web app guide</title>
+<link rel="icon" href="https://framerusercontent.com/images/qxyuuxvSpKwbRiJxK7cHNcrPoc.png" type="image/png">
+<link rel="apple-touch-icon" href="https://framerusercontent.com/images/hP9oQHwYPN7PsB64pmx4s8oV0xo.png">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-lOkKd34JNi-LNFswJd_9L.js" data-domain="getcassis.com"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+  plausible('pageview', { u: 'https://getcassis.com/docs/app' })
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFAF9;
+  --bg-raised: #FFFFFF;
+  --bg-card: #F5F5F3;
+  --bg-inset: #EEEEEB;
+  --border: #DDDDD8;
+  --border-dim: #E8E8E4;
+  --text-1: #1A1A1A;
+  --text-2: #5C5C5C;
+  --text-3: #8C8C8C;
+  --accent: #7C5CBF;
+  --accent-soft: rgba(124, 92, 191, 0.06);
+  --accent-mid: rgba(124, 92, 191, 0.12);
+  --accent-border: rgba(124, 92, 191, 0.2);
+  --accent-text: #6B4FA8;
+  --red: #C93C37;
+  --red-soft: rgba(201, 60, 55, 0.06);
+  --amber: #A07318;
+  --amber-soft: rgba(160, 115, 24, 0.06);
+  --amber-border: rgba(160, 115, 24, 0.12);
+  --green: #357A38;
+  --green-soft: rgba(53, 122, 56, 0.06);
+  --blue: #2E6FBA;
+  --blue-soft: rgba(46, 111, 186, 0.06);
+  --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --serif: 'Newsreader', Georgia, serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+  --brand: 'DM Serif Display', serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--text-1); font-family: var(--sans); }
+
+/* NAV */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; padding: 0 24px; height: 56px;
+  background: rgba(250,250,249,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-dim);
+  justify-content: space-between;
+}
+.nav-left { display: flex; align-items: center; gap: 12px; }
+.top-nav .logo { font-family: var(--brand); font-size: 1.25rem; font-weight: 400; letter-spacing: 0.02em; color: #111110; text-decoration: none; }
+.nav-toggle {
+  display: none; background: transparent; border: 0; padding: 6px;
+  cursor: pointer; color: var(--text-2); border-radius: 4px;
+  align-items: center; justify-content: center;
+}
+.nav-toggle:hover { color: var(--text-1); background: var(--bg-inset); }
+.nav-toggle svg { display: block; }
+.nav-backdrop {
+  position: fixed; inset: 56px 0 0 0; background: rgba(26,26,26,0.3);
+  z-index: 95; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.nav-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-family: "DM Sans", sans-serif; font-size: 14px; color: var(--text-2);
+  text-decoration: none; letter-spacing: 0.02em; line-height: 1em; transition: color 0.15s;
+}
+.nav-link:hover { color: #111110; }
+.nav-cta {
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.88px;
+  text-transform: uppercase; color: #FAFAF8; text-decoration: none;
+  padding: 7px 16px; background: #1A1A1A; border-radius: 4px;
+  line-height: 16px; height: 30px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.nav-cta:hover { background: var(--text-2); }
+
+/* SIDEBAR */
+.side-nav {
+  position: fixed; top: 56px; left: 0; bottom: 0; width: 220px;
+  background: var(--bg-card); border-right: 1px solid var(--border-dim);
+  overflow-y: auto; padding: 16px 0; z-index: 100;
+  transition: transform 0.2s ease;
+}
+.side-nav .nav-group {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3);
+  padding: 14px 18px 4px;
+}
+.side-nav .nav-group:first-child { padding-top: 6px; }
+.side-nav a {
+  display: block; padding: 4px 18px 4px 22px; font-size: 0.8rem;
+  color: var(--text-2); text-decoration: none; transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+.side-nav a:hover { color: var(--text-1); }
+.side-nav a.active { color: var(--accent-text); font-weight: 500; border-left-color: var(--accent); background: var(--accent-soft); }
+.side-nav a.sub { padding-left: 30px; font-size: 0.75rem; color: var(--text-3); }
+.side-nav a.sub::before { content: "→ "; }
+
+/* MAIN */
+.main { margin-left: 220px; margin-top: 56px; }
+.content { max-width: 760px; margin: 0 auto; padding: 48px 48px 120px; }
+
+/* HERO */
+.hero { margin-bottom: 56px; }
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 400; line-height: 1.2; color: var(--text-1);
+  letter-spacing: -0.01em; margin-bottom: 16px;
+}
+.hero p { font-size: 0.95rem; font-weight: 300; line-height: 1.7; color: var(--text-2); max-width: 600px; }
+.hero p + p { margin-top: 6px; }
+
+/* SECTION */
+.section { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border-dim); }
+.section-label {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
+}
+.section h2 {
+  font-family: var(--serif); font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+  font-weight: 400; line-height: 1.3; color: var(--text-1); margin-bottom: 8px;
+}
+.section > p { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; margin-bottom: 28px; max-width: 600px; }
+.subsection { margin-top: 40px; padding-top: 0; border-top: none; }
+.subsection h2 {
+  font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 400; line-height: 1.3; color: var(--text-1); margin-bottom: 6px;
+}
+.subsection > p { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; margin-bottom: 24px; max-width: 600px; }
+
+/* SUMMARY ROW */
+.summary-row {
+  display: grid; grid-template-columns: 180px 1fr; gap: 0 24px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-dim); font-size: 0.85rem;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row dt { font-weight: 500; color: var(--text-1); }
+.summary-row dd { color: var(--text-2); margin: 0; line-height: 1.6; }
+
+/* CHAT MOCK */
+.chat-mock {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden; margin-bottom: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.chat-bar {
+  padding: 10px 16px; border-bottom: 1px solid var(--border-dim);
+  font-family: var(--mono); font-size: 0.7rem; color: var(--text-3);
+  display: flex; align-items: center; gap: 6px;
+}
+.chat-bar .online { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+.chat-exchange { padding: 16px; border-bottom: 1px solid var(--border-dim); }
+.chat-exchange:last-child { border-bottom: none; }
+
+.chat-q {
+  font-size: 0.85rem; color: var(--text-1); margin-bottom: 12px;
+  padding: 8px 12px; background: var(--accent-soft);
+  border: 1px solid var(--accent-border); border-radius: 6px;
+  display: inline-block; line-height: 1.5;
+}
+
+.chat-a { font-size: 0.82rem; line-height: 1.6; color: var(--text-2); }
+
+.chat-a .answer-val {
+  font-family: var(--mono); font-size: 1.1rem; color: var(--text-1);
+  font-weight: 500; display: block; margin: 6px 0;
+}
+
+.chat-a .provenance {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+  background: var(--bg-inset); padding: 8px 10px; border-radius: 3px;
+  margin-top: 8px; line-height: 1.6;
+}
+.chat-a .provenance .obj { color: var(--accent-text); }
+
+.chat-result-block {
+  margin-top: 10px; padding: 10px 12px; background: var(--bg-card);
+  border: 1px solid var(--border-dim); border-radius: 4px;
+  font-family: var(--mono); font-size: 0.7rem; line-height: 1.7; color: var(--text-2);
+}
+.chat-result-block .hl { color: var(--accent-text); }
+.chat-result-block .num { color: var(--text-1); font-weight: 500; }
+.chat-result-block .src { color: var(--text-3); }
+.chat-result-block .warn { color: var(--amber); }
+.chat-result-block .ok { color: var(--green); }
+
+.chat-system { font-size: 0.82rem; color: var(--text-2); line-height: 1.6; }
+
+.chat-plan {
+  margin-top: 8px; padding: 10px 12px; background: var(--bg-card);
+  border: 1px solid var(--border-dim); border-radius: 4px;
+}
+.chat-plan-title {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;
+}
+.chat-plan-body { font-size: 0.82rem; color: var(--text-2); line-height: 1.6; }
+.chat-plan-chips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chat-plan-chip {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--accent-text);
+  background: var(--accent-soft); padding: 3px 8px; border-radius: 3px;
+  border: 1px solid var(--accent-border);
+}
+.chat-plan-assumptions {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--text-3);
+  margin-top: 10px; padding: 6px 8px; background: var(--bg-raised); border-radius: 3px;
+  line-height: 1.6;
+}
+.chat-run-button {
+  display: inline-block; margin-top: 10px; padding: 6px 14px;
+  background: var(--text-1); color: var(--bg-raised);
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em;
+  border-radius: 4px; cursor: default;
+}
+
+.chat-action-row {
+  display: flex; gap: 10px; margin-top: 12px; align-items: center;
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+}
+.chat-action-pill {
+  padding: 3px 8px; background: var(--bg-inset); border-radius: 3px;
+}
+
+.chat-caption {
+  font-size: 0.8rem; color: var(--text-3); margin-top: 12px; line-height: 1.6;
+}
+.chat-caption strong { color: var(--text-2); font-weight: 500; }
+
+.chat-scenario { margin-top: 28px; margin-bottom: 10px; }
+.chat-scenario-title {
+  font-size: 0.92rem; font-weight: 500; color: var(--text-1); margin-bottom: 4px;
+}
+.chat-scenario-desc {
+  font-size: 0.84rem; color: var(--text-2); line-height: 1.6;
+  max-width: 600px; margin-bottom: 14px;
+}
+
+/* Gap-card variant inside chat mock */
+.chat-gap-card {
+  margin-top: 10px; padding: 12px 14px;
+  background: var(--amber-soft); border-left: 3px solid var(--amber);
+  border-radius: 4px;
+}
+.chat-gap-card-title {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--amber);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;
+  font-weight: 500;
+}
+.chat-gap-card-body { font-size: 0.83rem; color: var(--text-2); line-height: 1.55; }
+.chat-gap-card-propose {
+  margin-top: 10px; padding: 8px 10px; background: var(--bg-raised);
+  border: 1px solid var(--border-dim); border-radius: 3px;
+  font-size: 0.78rem; color: var(--text-2);
+}
+.chat-gap-card-propose-label {
+  font-family: var(--mono); font-size: 0.64rem; color: var(--text-3);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px;
+}
+.chat-gap-card-propose-name { color: var(--text-1); font-weight: 500; }
+.chat-gap-card-propose-sql {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-2);
+  background: var(--bg-inset); padding: 4px 7px; border-radius: 2px;
+  margin-top: 6px; display: inline-block;
+}
+.chat-gap-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+.chat-gap-btn {
+  font-family: var(--sans); font-size: 0.74rem; padding: 4px 10px;
+  border-radius: 3px; border: 1px solid var(--border); background: var(--bg-raised);
+  color: var(--text-2); cursor: default;
+}
+.chat-gap-btn.primary {
+  background: var(--amber); color: #fff; border-color: var(--amber);
+}
+
+/* Clarification options */
+.chat-clarify-options {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+}
+.chat-clarify-option {
+  padding: 7px 14px; background: var(--bg-raised);
+  border: 1px solid var(--accent-border); border-radius: 6px;
+  font-size: 0.8rem; color: var(--text-1); cursor: default;
+}
+.chat-clarify-option:hover { background: var(--accent-soft); }
+
+/* UI MOCK (non-chat screen snapshots) */
+.ui-mock {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden; margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.ui-mock-bar {
+  padding: 9px 16px; border-bottom: 1px solid var(--border-dim);
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+  background: var(--bg-card); letter-spacing: 0.02em;
+}
+.ui-mock-tabs { display: flex; border-bottom: 1px solid var(--border-dim); background: var(--bg-raised); overflow-x: auto; }
+.ui-mock-tab {
+  padding: 10px 14px; font-size: 0.78rem; color: var(--text-3);
+  border-bottom: 2px solid transparent; white-space: nowrap; cursor: default;
+}
+.ui-mock-tab.active { color: var(--text-1); border-bottom-color: var(--accent); font-weight: 500; }
+.ui-mock-body { padding: 16px 18px; }
+
+.ui-mock-split { display: grid; grid-template-columns: 180px 1fr; }
+.ui-mock-list {
+  border-right: 1px solid var(--border-dim); background: var(--bg-card);
+  padding: 10px 8px; min-height: 260px;
+}
+.ui-mock-list-search {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+  padding: 6px 8px; background: var(--bg-raised); border: 1px solid var(--border-dim);
+  border-radius: 3px; margin-bottom: 8px;
+}
+.ui-mock-item {
+  padding: 5px 10px; font-size: 0.78rem; color: var(--text-2);
+  border-radius: 3px; cursor: default;
+}
+.ui-mock-item.active { background: var(--accent-soft); color: var(--accent-text); font-weight: 500; }
+.ui-mock-item-more { padding: 5px 10px; font-size: 0.72rem; color: var(--text-3); font-style: italic; }
+
+.ui-mock-detail { padding: 16px 20px; }
+.ui-mock-detail-title {
+  font-size: 1rem; color: var(--text-1); font-weight: 500; margin-bottom: 2px;
+}
+.ui-mock-detail-desc { font-size: 0.82rem; color: var(--text-2); margin-bottom: 14px; line-height: 1.5; }
+.ui-mock-kv { display: grid; grid-template-columns: 110px 1fr; gap: 4px 12px; padding: 6px 0; font-size: 0.78rem; border-bottom: 1px solid var(--border-dim); }
+.ui-mock-kv:last-of-type { border-bottom: 0; }
+.ui-mock-kv-label { color: var(--text-3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.ui-mock-kv-value { color: var(--text-1); font-family: var(--mono); font-size: 0.76rem; }
+
+.ui-mock-props-title {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-3);
+  letter-spacing: 0.06em; text-transform: uppercase; margin: 14px 0 6px;
+}
+.ui-mock-props { font-family: var(--mono); font-size: 0.72rem; line-height: 1.75; }
+.ui-mock-prop { display: grid; grid-template-columns: 130px 60px 1fr; gap: 10px; padding: 2px 0; }
+.ui-mock-prop-name { color: var(--text-1); }
+.ui-mock-prop-type { color: var(--accent-text); }
+.ui-mock-prop-note { color: var(--text-3); }
+.ui-mock-pill { background: var(--accent-soft); color: var(--accent-text); border: 1px solid var(--accent-border); padding: 1px 6px; border-radius: 2px; font-size: 0.62rem; margin-left: 4px; }
+
+/* Tab count badge */
+.ui-mock-tab-count {
+  display: inline-block; margin-left: 6px; padding: 1px 7px;
+  background: var(--bg-inset); color: var(--text-3);
+  border-radius: 10px; font-size: 0.62rem; font-weight: 500;
+}
+.ui-mock-tab.active .ui-mock-tab-count { background: var(--accent-soft); color: var(--accent-text); }
+
+/* Object list row (2-line: display name + source table) */
+.ui-mock-obj-row {
+  display: flex; flex-direction: column; gap: 0; padding: 7px 10px;
+  cursor: default; border-radius: 3px;
+}
+.ui-mock-obj-row.active { background: var(--accent-soft); }
+.ui-mock-obj-name { font-size: 0.78rem; color: var(--text-1); font-weight: 500; line-height: 1.3; }
+.ui-mock-obj-row.active .ui-mock-obj-name { color: var(--accent-text); }
+.ui-mock-obj-source { font-family: var(--mono); font-size: 0.66rem; color: var(--text-3); line-height: 1.3; }
+
+/* Link card (in detail panel) */
+.ui-mock-link-card {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border: 1px solid var(--border-dim); border-radius: 4px;
+  font-size: 0.76rem; margin-bottom: 5px;
+}
+.ui-mock-link-card-title { color: var(--text-1); font-weight: 500; }
+.ui-mock-link-card-arrow { color: var(--text-3); font-family: var(--mono); font-size: 0.7rem; flex: 1; }
+.ui-mock-link-card-cardinality {
+  background: var(--bg-inset); color: var(--text-3);
+  padding: 1px 8px; border-radius: 10px; font-size: 0.64rem;
+}
+
+/* Property card (in detail panel) */
+.ui-mock-prop-card {
+  border: 1px solid var(--border-dim); border-radius: 4px;
+  padding: 9px 11px; margin-bottom: 6px;
+}
+.ui-mock-prop-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.ui-mock-prop-label { flex: 1; font-size: 0.8rem; color: var(--text-1); font-weight: 500; }
+.ui-mock-prop-type-pill {
+  background: var(--bg-inset); color: var(--text-3);
+  padding: 1px 8px; border-radius: 10px; font-size: 0.62rem;
+}
+.ui-mock-pill-pk {
+  background: rgba(160, 115, 24, 0.12); color: var(--amber);
+  padding: 1px 7px; border-radius: 10px; font-size: 0.62rem;
+  font-weight: 500;
+}
+.ui-mock-prop-desc { font-size: 0.72rem; color: var(--text-3); margin-bottom: 4px; line-height: 1.5; }
+.ui-mock-prop-code {
+  font-family: var(--mono); font-size: 0.68rem; color: var(--text-1);
+  background: var(--bg-inset); padding: 2px 7px; border-radius: 3px;
+  display: inline-block;
+}
+
+/* Section label inside detail panel */
+.ui-mock-detail-section-label {
+  font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-3); margin: 14px 0 6px; font-weight: 500;
+}
+
+/* Add button */
+.ui-mock-add-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 6px 10px; border: 1px solid var(--accent-border);
+  border-radius: 4px; color: var(--accent-text); background: var(--bg-raised);
+  font-size: 0.72rem; cursor: default; font-family: var(--sans);
+}
+.ui-mock-list-footer { padding: 10px; border-top: 1px solid var(--border-dim); }
+.ui-mock-list-footer .ui-mock-add-btn { width: 100%; }
+
+/* Overflow guards for narrow screens */
+.ui-mock-split > * { min-width: 0; }
+.ui-mock-detail { min-width: 0; overflow: hidden; }
+.ui-mock-kv-value { overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+.ui-mock-obj-source { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.ui-mock-obj-row { min-width: 0; }
+.ui-mock-obj-row > * { overflow: hidden; text-overflow: ellipsis; }
+.ui-mock-link-card { min-width: 0; flex-wrap: wrap; }
+.ui-mock-link-card > * { min-width: 0; }
+.ui-mock-link-card-arrow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.ui-mock-prop-code, .ui-mock-prop-card { max-width: 100%; }
+.ui-mock-prop-card { overflow: hidden; }
+.ui-mock-prop-code { overflow-x: auto; }
+
+/* Page header bar (icon + title + right-side buttons) */
+.ui-mock-page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border-dim);
+  background: var(--bg-raised);
+}
+.ui-mock-page-header-left { display: flex; align-items: center; gap: 8px; }
+.ui-mock-page-header-icon { color: var(--text-3); width: 14px; height: 14px; }
+.ui-mock-page-header-title { font-size: 0.92rem; font-weight: 600; color: var(--text-1); }
+.ui-mock-page-header-sub { font-size: 0.76rem; color: var(--text-3); }
+.ui-mock-page-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; background: var(--text-1); color: var(--bg-raised);
+  border-radius: 6px; font-size: 0.74rem; cursor: default;
+}
+.ui-mock-page-btn.outline {
+  background: var(--bg-raised); color: var(--text-1); border: 1px solid var(--border);
+}
+
+/* Colored type pills (suggestions) */
+.ui-mock-type-pill {
+  font-size: 0.64rem; font-weight: 500; padding: 2px 8px; border-radius: 10px;
+}
+.ui-mock-type-pill.green { background: #dcfce7; color: #14532d; }
+.ui-mock-type-pill.blue { background: #dbeafe; color: #1e3a8a; }
+.ui-mock-type-pill.purple { background: #ede9fe; color: #4c1d95; }
+.ui-mock-type-pill.amber { background: #fef3c7; color: #78350f; }
+.ui-mock-type-pill.cyan { background: #cffafe; color: #155e75; }
+.ui-mock-type-pill.red { background: #fee2e2; color: #7f1d1d; }
+
+/* Eval runs table */
+.ui-mock-table { width: 100%; font-size: 0.78rem; border-collapse: collapse; }
+.ui-mock-table thead {
+  background: var(--bg-raised); border-bottom: 1px solid var(--border-dim);
+}
+.ui-mock-table th {
+  text-align: left; padding: 8px 14px; font-weight: 500;
+  color: var(--text-3); font-size: 0.7rem;
+}
+.ui-mock-table th.right { text-align: right; }
+.ui-mock-table td {
+  padding: 9px 14px; border-bottom: 1px solid var(--border-dim);
+  color: var(--text-2); vertical-align: middle;
+}
+.ui-mock-table td.mono { font-family: var(--mono); }
+.ui-mock-table td.right { text-align: right; }
+.ui-mock-status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 9px; border-radius: 10px; font-size: 0.68rem; font-weight: 500;
+}
+.ui-mock-status-badge.completed { background: #dcfce7; color: #14532d; }
+.ui-mock-status-badge.running { background: #dbeafe; color: #1e3a8a; }
+
+/* Table detail (Tables page) */
+.ui-mock-split-tables { grid-template-columns: 240px 1fr; }
+.ui-mock-table-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; font-size: 0.78rem; cursor: default;
+  border-bottom: 1px solid var(--border-dim);
+}
+.ui-mock-table-row.active { background: var(--accent-soft); color: var(--accent-text); }
+.ui-mock-table-row-schema { color: var(--text-3); }
+.ui-mock-table-row-name { color: var(--text-1); font-weight: 500; }
+.ui-mock-table-row.active .ui-mock-table-row-name { color: var(--accent-text); }
+.ui-mock-table-row-count { margin-left: auto; font-size: 0.7rem; color: var(--text-3); font-family: var(--mono); }
+
+/* Column list (inside table detail) */
+.ui-mock-col-list {
+  border-right: 1px solid var(--border-dim); background: var(--bg-raised);
+  min-width: 170px; padding: 4px 0;
+}
+.ui-mock-col-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 12px; font-size: 0.76rem; cursor: default;
+}
+.ui-mock-col-row.active { background: var(--accent-soft); color: var(--accent-text); }
+.ui-mock-col-icon {
+  font-family: var(--mono); font-size: 0.62rem; color: var(--text-3);
+  width: 12px; text-align: center;
+}
+.ui-mock-col-icon.pk { color: var(--amber); }
+
+/* Column detail badges */
+.ui-mock-col-badge {
+  display: inline-block; font-size: 0.66rem; font-weight: 500;
+  padding: 2px 8px; border-radius: 10px; margin-right: 4px;
+}
+.ui-mock-col-badge.pk { background: rgba(160, 115, 24, 0.12); color: var(--amber); }
+.ui-mock-col-badge.notnull { background: #dbeafe; color: #1e3a8a; }
+.ui-mock-col-badge.nullable { background: var(--bg-inset); color: var(--text-3); }
+
+/* Object card (inside table detail) */
+.ui-mock-obj-card {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--bg-card);
+  border-radius: 4px; font-size: 0.8rem; margin-top: 8px;
+}
+.ui-mock-obj-card-title { font-weight: 500; color: var(--text-1); }
+.ui-mock-obj-card-desc { color: var(--text-3); font-size: 0.76rem; }
+
+.ui-mock-toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px; border-bottom: 1px solid var(--border-dim); background: var(--bg-raised);
+}
+.ui-mock-toolbar-note { font-size: 0.76rem; color: var(--text-3); }
+.ui-mock-cards { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.ui-mock-card { border: 1px solid var(--border-dim); border-radius: 4px; padding: 12px 14px; }
+.ui-mock-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.ui-mock-card-tag {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em;
+  color: var(--accent-text); background: var(--accent-soft);
+  border: 1px solid var(--accent-border); padding: 2px 6px; border-radius: 2px;
+  text-transform: uppercase;
+}
+.ui-mock-card-title { font-size: 0.85rem; color: var(--text-1); font-weight: 500; }
+.ui-mock-card-body { font-size: 0.78rem; color: var(--text-2); line-height: 1.55; margin-top: 4px; }
+.ui-mock-card-detail {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--text-3);
+  background: var(--bg-card); padding: 6px 10px; border-radius: 3px; margin-top: 6px;
+  line-height: 1.6;
+}
+.ui-mock-card-actions { display: flex; gap: 8px; margin-top: 10px; }
+.ui-mock-btn {
+  padding: 4px 10px; border-radius: 3px; font-size: 0.72rem;
+  border: 1px solid var(--border); background: var(--bg-raised);
+  color: var(--text-2); cursor: default; font-family: var(--sans);
+}
+.ui-mock-btn-primary { background: var(--text-1); color: var(--bg-raised); border-color: var(--text-1); }
+
+.ui-mock-rows { padding: 0; }
+.ui-mock-row {
+  display: grid; gap: 16px; padding: 9px 16px;
+  font-size: 0.78rem; border-bottom: 1px solid var(--border-dim);
+  align-items: center;
+}
+.ui-mock-row:last-child { border-bottom: 0; }
+.ui-mock-row-name { color: var(--text-1); font-family: var(--mono); font-size: 0.76rem; }
+.ui-mock-row-meta { color: var(--text-3); font-family: var(--mono); font-size: 0.72rem; }
+.ui-mock-row-chip {
+  display: inline-block; padding: 1px 7px; background: var(--accent-soft);
+  color: var(--accent-text); border: 1px solid var(--accent-border);
+  border-radius: 2px; font-size: 0.68rem; font-family: var(--mono);
+}
+.ui-mock-row-status-ok { color: var(--green); font-family: var(--mono); font-size: 0.72rem; }
+.ui-mock-row-status-fail { color: var(--amber); font-family: var(--mono); font-size: 0.72rem; }
+
+.ui-mock-header-btn {
+  padding: 6px 12px; background: var(--text-1); color: var(--bg-raised);
+  border: none; border-radius: 3px; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.06em; text-transform: uppercase; cursor: default;
+}
+
+@media (max-width: 700px) {
+  .ui-mock-split { grid-template-columns: 1fr; }
+  .ui-mock-list { border-right: 0; border-bottom: 1px solid var(--border-dim); min-height: auto; }
+  .ui-mock-prop { grid-template-columns: 110px 50px 1fr; gap: 6px; }
+}
+
+/* CALLOUT */
+.callout {
+  padding: 14px 18px; border-radius: 4px; margin: 20px 0;
+  font-size: 0.85rem; line-height: 1.65; color: var(--text-2);
+  background: var(--amber-soft); border-left: 3px solid var(--amber);
+}
+.callout strong { color: var(--text-1); font-weight: 500; }
+.callout a { color: var(--accent-text); }
+
+/* BACK LINK */
+.back-link {
+  display: inline-block; margin-bottom: 24px;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-3);
+  text-decoration: none; letter-spacing: 0.04em;
+}
+.back-link:hover { color: var(--text-1); }
+.back-link::before { content: "← "; }
+
+/* CTA */
+.cta-section { text-align: center; padding-top: 56px; padding-bottom: 16px; }
+.cta-section h2 {
+  font-family: var(--serif); font-size: 1.4rem; font-weight: 400;
+  color: var(--text-1); margin-bottom: 10px;
+}
+.cta-section p { font-size: 0.88rem; color: var(--text-2); margin-bottom: 24px; }
+.cta-button {
+  display: inline-block; padding: 12px 28px; background: var(--text-1);
+  color: var(--bg-raised); font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  border-radius: 4px; transition: all 0.15s;
+}
+.cta-button:hover { background: var(--text-2); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-flex; }
+  .side-nav { transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.08); }
+  .side-nav.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .content { padding: 24px 20px 60px; }
+  .summary-row { grid-template-columns: 1fr; gap: 2px 0; }
+}
+@media (min-width: 901px) {
+  .nav-backdrop { display: none; }
+}
+@media (max-width: 420px) {
+  .nav-link { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-left">
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <a href="https://getcassis.com/" class="logo">Cassis</a>
+  </div>
+  <div class="nav-links">
+    <a href="https://getcassis.com/blog" class="nav-link">Blog</a>
+    <a href="index.html" class="nav-link">Docs</a>
+    <a href="https://getcassis.com/" target="_blank" rel="noopener" class="nav-cta">Stay tuned</a>
+  </div>
+</nav>
+
+<div class="nav-backdrop" aria-hidden="true"></div>
+
+<nav class="side-nav">
+  <div class="nav-group">Overview</div>
+  <a href="index.html#top">Introduction</a>
+  <a href="index.html#what-is-ontology">What is an ontology?</a>
+  <a href="index.html#how-it-works">How it works</a>
+  <a href="index.html#pick-interface">Pick your interface</a>
+
+  <div class="nav-group">Web app</div>
+  <a href="app.html#top">Getting started</a>
+  <a href="app.html#chat">Chat</a>
+  <a href="app.html#ontology">Ontology</a>
+  <a href="app.html#suggestions">Suggestions</a>
+  <a href="app.html#evals">Evals</a>
+  <a href="app.html#tables">Tables</a>
+
+  <div class="nav-group">MCP server</div>
+  <a href="mcp.html#top">Introduction</a>
+  <a href="mcp.html#connecting">Connecting</a>
+  <a href="mcp.html#tools">Tools</a>
+  <a href="mcp.html#ping" class="sub">Test connection</a>
+  <a href="mcp.html#list-projects" class="sub">List projects</a>
+  <a href="mcp.html#ask-question" class="sub">Ask</a>
+  <a href="mcp.html#limits">Limits and errors</a>
+</nav>
+
+<div class="main">
+<div class="content">
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <a href="index.html" class="back-link">Docs overview</a>
+  <h1>Using the Cassis web app</h1>
+  <p>The Cassis web app lives at <a href="https://app.getcassis.com/" target="_blank" rel="noopener" style="color: var(--accent-text);">app.getcassis.com</a>. Sign in with Google, or set a password through "Reset password" on the sign-in screen.</p>
+  <p>The app has five sections in the left sidebar: Chat, Ontology, Suggestions, Evals, and Tables. Below is a short tour of each, using a Formula 1 project as the running example.</p>
+  <div class="callout">
+    <strong>Access is limited to selected design partners today.</strong> Leave your email at <a href="https://getcassis.com/" target="_blank" rel="noopener">getcassis.com</a> to be notified when it opens up.
+  </div>
+</div>
+
+
+<!-- FIVE SECTIONS SUMMARY (intro, no h2) -->
+<div style="margin-top: 32px;">
+  <div class="summary-row">
+    <dt>Chat</dt>
+    <dd>Ask questions in natural language. Review the proposed query plan, then run it to see SQL and results.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Ontology</dt>
+    <dd>Browse and edit what Cassis knows about your data: objects, properties, links, context, graph.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Suggestions</dt>
+    <dd>Ontology updates proposed from your recent chats. Review, edit, apply.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Evals</dt>
+    <dd>A dataset of question / expected-answer pairs, with runs across the current ontology.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Tables</dt>
+    <dd>The raw schema underneath the ontology: tables, columns, row counts, and the ontology objects mapped to each.</dd>
+  </div>
+</div>
+
+
+<!-- CHAT -->
+<div class="section" id="chat">
+  <h2>Chat</h2>
+  <p>Ask a question in natural language. For simple questions, Cassis answers directly. For complex or expensive ones, it surfaces a proposed query plan first: a plain-language description of how it will answer, the assumptions it had to make, and the ontology objects it will use. Review the plan, then click Run this plan to execute.</p>
+  <p>Every answer carries 👍 / 👎 with a free-text comment and an "Add as test case" shortcut. When you correct the agent in chat (a wrong answer, a clarification on a field, an object description that needs fixing), it's captured automatically and surfaced in Suggestions for review.</p>
+</div>
+
+<div class="chat-scenario">
+  <div class="chat-scenario-title">1. Simple question</div>
+  <div class="chat-scenario-desc">Clear questions run directly. Cassis returns the answer in plain language, with the SQL and result so anyone downstream can verify.</div>
+</div>
+
+<div class="chat-mock">
+  <div class="chat-bar"><span class="online"></span> Cassis · Formula 1 project</div>
+  <div class="chat-exchange">
+    <div class="chat-q">Who won the most races in 2023?</div>
+    <div class="chat-a">
+      <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.6;">Max Verstappen won 19 out of 22 races in 2023, far ahead of Pérez (2) and Sainz (1).</div>
+      <div class="chat-result-block">
+        <span class="key">sql</span>: <span class="src">SELECT d.full_name, COUNT(*) FROM result r</span><br>
+        <span class="src">&nbsp;&nbsp;JOIN race ra ON r.race_id = ra.race_id</span><br>
+        <span class="src">&nbsp;&nbsp;JOIN driver d ON r.driver_id = d.driver_id</span><br>
+        <span class="src">&nbsp;&nbsp;WHERE ra.year = 2023 AND r.position = 1</span><br>
+        <span class="src">&nbsp;&nbsp;GROUP BY d.full_name ORDER BY 2 DESC</span><br>
+        <br>
+        <span class="key">results</span>: <span class="num">3</span> rows<br>
+        <span class="key">objects_used</span>: <span class="hl">Race Result</span>, <span class="hl">Race</span>, <span class="hl">Driver</span>
+      </div>
+      <div class="chat-action-row">
+        <span class="chat-action-pill">Show SQL</span>
+        <span class="chat-action-pill">Download</span>
+        <span class="chat-action-pill">👍 / 👎</span>
+        <span class="chat-action-pill">Add as test case</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="chat-scenario">
+  <div class="chat-scenario-title">2. Plan, then execution</div>
+  <div class="chat-scenario-desc">Complex or expensive questions surface a plan first. Review the assumptions and the objects the agent picked, then click Run this plan to execute.</div>
+</div>
+
+<div class="chat-mock">
+  <div class="chat-bar"><span class="online"></span> Cassis · Formula 1 project</div>
+  <div class="chat-exchange">
+    <div class="chat-q">Compare total points scored by all drivers in 2022 vs 2023, including sprint results.</div>
+    <div class="chat-a">
+      <div class="chat-plan">
+        <div class="chat-plan-title">Proposed query plan</div>
+        <div class="chat-plan-body">UNION query combining the <code style="font-family: var(--mono); font-size: 0.78rem;">result</code> and <code style="font-family: var(--mono); font-size: 0.78rem;">sprint_result</code> tables, grouped by season.</div>
+        <div class="chat-plan-chips">
+          <span class="chat-plan-chip">Race</span>
+          <span class="chat-plan-chip">Race Result</span>
+          <span class="chat-plan-chip">Sprint Result</span>
+        </div>
+        <div class="chat-plan-assumptions">
+          <span class="hl" style="color: var(--text-2)">Assumptions:</span><br>
+          · Sprint points included in the total<br>
+          · Points rolled up across all drivers per season
+        </div>
+        <div class="chat-run-button">Run this plan</div>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.6; margin-top: 10px;">Across 2023 drivers scored 2,458 points combined, slightly ahead of 2022 at 2,350. Sprint points are included in both totals.</div>
+      <div class="chat-result-block">
+        <span class="hl">2 rows.</span><br>
+        2022: <span class="num">2,350</span> points<br>
+        2023: <span class="num">2,458</span> points
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="chat-scenario">
+  <div class="chat-scenario-title">3. Follow-up in the same chat</div>
+  <div class="chat-scenario-desc">Keep asking. The chat holds its context, so follow-ups reference earlier results naturally — no need to restate the scope.</div>
+</div>
+
+<div class="chat-mock">
+  <div class="chat-bar"><span class="online"></span> Cassis · Formula 1 project · continued</div>
+  <div class="chat-exchange">
+    <div class="chat-q">Now break it down by constructor for 2023.</div>
+    <div class="chat-a">
+      <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.6;">Grouped by constructor in 2023: Red Bull Racing 860, Mercedes 409, Ferrari 406, McLaren 302, Aston Martin 280, Alpine 120, and five more under 30 points.</div>
+      <div class="chat-result-block">
+        <span class="key">results</span>: <span class="num">10</span> rows<br>
+        <span class="key">objects_used</span>: <span class="hl">Constructor Standing</span>, <span class="hl">Constructor</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONTOLOGY -->
+<div class="section" id="ontology">
+  <h2>Ontology</h2>
+  <p>Where you explore and edit what Cassis knows about your data. The tab bar at the top has six views: Context, Objects, Definitions, Links, Graph, and Import / Export. Everything is editable inline.</p>
+</div>
+
+<div style="margin-top:12px; margin-bottom: 28px;">
+  <div class="summary-row">
+    <dt>Context</dt>
+    <dd>The business context Cassis uses to ground every answer. Season numbering, FR vs global terminology, product conventions, anything an analyst would otherwise explain in a meeting.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Objects</dt>
+    <dd>The business objects we extracted from your tables. Each one has a description, its source table, synonyms, and properties.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Definitions</dt>
+    <dd>Metric and concept definitions that don't belong to a single object (e.g. "podium", "DNF", "win percentage").</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Links</dt>
+    <dd>Relationships between objects, with the SQL join pattern and notes.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Graph</dt>
+    <dd>Visual overview of the ontology. Useful to spot connections or gaps at a glance.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Import / Export</dt>
+    <dd>Export your ontology into Cassis's format for now. More formats come later.</dd>
+  </div>
+</div>
+
+<div class="ui-mock">
+  <div class="ui-mock-tabs">
+    <div class="ui-mock-tab">Context</div>
+    <div class="ui-mock-tab active">Objects<span class="ui-mock-tab-count">15</span></div>
+    <div class="ui-mock-tab">Definitions</div>
+    <div class="ui-mock-tab">Links<span class="ui-mock-tab-count">26</span></div>
+    <div class="ui-mock-tab">Graph</div>
+    <div class="ui-mock-tab">Import / Export</div>
+  </div>
+  <div class="ui-mock-split">
+    <div class="ui-mock-list" style="padding: 0; display: flex; flex-direction: column;">
+      <div style="padding: 10px 10px 6px;">
+        <div class="ui-mock-list-search">Search objects…</div>
+      </div>
+      <div style="flex: 1; padding: 2px 6px;">
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Circuit</span>
+          <span class="ui-mock-obj-source">"public"."circuits"</span>
+        </div>
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Constructor</span>
+          <span class="ui-mock-obj-source">"public"."constructors"</span>
+        </div>
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Constructor Result</span>
+          <span class="ui-mock-obj-source">"public"."constructor_results"</span>
+        </div>
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Constructor Standing</span>
+          <span class="ui-mock-obj-source">"public"."constructor_standings"</span>
+        </div>
+        <div class="ui-mock-obj-row active">
+          <span class="ui-mock-obj-name">Driver</span>
+          <span class="ui-mock-obj-source">"public"."drivers"</span>
+        </div>
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Driver Standing</span>
+          <span class="ui-mock-obj-source">"public"."driver_standings"</span>
+        </div>
+        <div class="ui-mock-obj-row">
+          <span class="ui-mock-obj-name">Lap Time</span>
+          <span class="ui-mock-obj-source">"public"."lap_times"</span>
+        </div>
+        <div class="ui-mock-item-more">+ 8 more</div>
+      </div>
+      <div class="ui-mock-list-footer">
+        <span class="ui-mock-add-btn">+ Add object</span>
+      </div>
+    </div>
+    <div class="ui-mock-detail">
+      <div class="ui-mock-detail-title">Driver</div>
+      <div class="ui-mock-detail-desc">Formula 1 drivers who have competed in races</div>
+      <div class="ui-mock-kv">
+        <span class="ui-mock-kv-label">Source table</span>
+        <span class="ui-mock-kv-value">"public"."drivers"</span>
+      </div>
+      <div class="ui-mock-kv">
+        <span class="ui-mock-kv-label">Synonyms</span>
+        <span class="ui-mock-kv-value" style="font-family: var(--sans); font-size: 0.8rem;">racer, pilot</span>
+      </div>
+      <div class="ui-mock-kv">
+        <span class="ui-mock-kv-label">Notes</span>
+        <span class="ui-mock-kv-value" style="font-family: var(--sans); font-size: 0.78rem; color: var(--text-2); line-height: 1.5;">There is also a drivers_ext table with the same columns but dob stored as text. Use the base drivers table which has dob as a proper date type.</span>
+      </div>
+
+      <div class="ui-mock-detail-section-label">Links</div>
+      <div class="ui-mock-link-card">
+        <span class="ui-mock-link-card-title">Driver Standing</span>
+        <span class="ui-mock-link-card-arrow">Driver Standing → Driver</span>
+        <span class="ui-mock-link-card-cardinality">many to one</span>
+      </div>
+      <div class="ui-mock-link-card">
+        <span class="ui-mock-link-card-title">Lap Time</span>
+        <span class="ui-mock-link-card-arrow">Lap Time → Driver</span>
+        <span class="ui-mock-link-card-cardinality">many to one</span>
+      </div>
+      <div class="ui-mock-link-card">
+        <span class="ui-mock-link-card-title">Race Result</span>
+        <span class="ui-mock-link-card-arrow">Result → Driver</span>
+        <span class="ui-mock-link-card-cardinality">many to one</span>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--text-3); margin-top: 2px;">+ 4 more</div>
+
+      <div class="ui-mock-detail-section-label" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Properties</span>
+        <span class="ui-mock-add-btn" style="padding: 3px 8px; font-size: 0.68rem;">+ Add property</span>
+      </div>
+      <div class="ui-mock-prop-card">
+        <div class="ui-mock-prop-header">
+          <span class="ui-mock-prop-label">Driver ID</span>
+          <span class="ui-mock-prop-type-pill">number</span>
+          <span class="ui-mock-pill-pk">PK</span>
+        </div>
+        <div class="ui-mock-prop-desc">Unique identifier for the driver</div>
+        <code class="ui-mock-prop-code">"driver_id"</code>
+      </div>
+      <div class="ui-mock-prop-card">
+        <div class="ui-mock-prop-header">
+          <span class="ui-mock-prop-label">Driver Reference</span>
+          <span class="ui-mock-prop-type-pill">string</span>
+        </div>
+        <div class="ui-mock-prop-desc">Short reference code for the driver (e.g. 'hamilton', 'verstappen')</div>
+        <code class="ui-mock-prop-code">"driver_ref"</code>
+      </div>
+      <div class="ui-mock-prop-card">
+        <div class="ui-mock-prop-header">
+          <span class="ui-mock-prop-label">Driver Code</span>
+          <span class="ui-mock-prop-type-pill">string</span>
+        </div>
+        <div class="ui-mock-prop-desc">Three-letter abbreviation code (e.g. 'HAM', 'VER')</div>
+        <code class="ui-mock-prop-code">"code"</code>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--text-3); margin-top: 2px;">+ 7 more</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SUGGESTIONS -->
+<div class="section" id="suggestions">
+  <h2>Suggestions</h2>
+  <p>When you correct the agent in a chat, clarify a field, or add business context, Cassis catches it here. Click "Analyze conversations" to scan recent chats for ambiguities and weak hypotheses, then review the proposed ontology changes and apply the ones that look right. This is how the ontology stays in sync with how your team actually talks about the data.</p>
+</div>
+
+<div class="ui-mock">
+  <div class="ui-mock-page-header">
+    <div class="ui-mock-page-header-left">
+      <svg class="ui-mock-page-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+      <span class="ui-mock-page-header-title">Suggestions</span>
+      <span class="ui-mock-page-header-sub">4 unanalyzed conversations</span>
+    </div>
+    <span class="ui-mock-page-btn">▶ Analyze conversations</span>
+  </div>
+  <div class="ui-mock-tabs">
+    <div class="ui-mock-tab active">All<span class="ui-mock-tab-count">10</span></div>
+    <div class="ui-mock-tab">Pending<span class="ui-mock-tab-count">7</span></div>
+    <div class="ui-mock-tab">Accepted<span class="ui-mock-tab-count">2</span></div>
+    <div class="ui-mock-tab">Rejected<span class="ui-mock-tab-count">1</span></div>
+  </div>
+  <div class="ui-mock-cards">
+    <div class="ui-mock-card">
+      <div class="ui-mock-card-head">
+        <span class="ui-mock-type-pill green">Add property</span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-1); font-weight: 500; margin-top: 4px;">Add is_win on Race Result</div>
+      <div class="ui-mock-card-body">3 chats used "win" and the agent inferred position = 1. Define it formally so future queries are grounded.</div>
+      <div class="ui-mock-card-detail">CASE WHEN position = 1 THEN TRUE ELSE FALSE END</div>
+      <div class="ui-mock-card-actions">
+        <span class="ui-mock-btn ui-mock-btn-primary">✓ Apply</span>
+        <span class="ui-mock-btn">✎</span>
+        <span class="ui-mock-btn">✕</span>
+      </div>
+    </div>
+    <div class="ui-mock-card">
+      <div class="ui-mock-card-head">
+        <span class="ui-mock-type-pill blue">Modify definition</span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-1); font-weight: 500; margin-top: 4px;">Add "team" as a synonym on Constructor</div>
+      <div class="ui-mock-card-body">3 recent chats used "team" to mean the constructor, not the engine manufacturer. Adding the synonym helps the agent resolve questions about teams directly.</div>
+      <div class="ui-mock-card-actions">
+        <span class="ui-mock-btn ui-mock-btn-primary">✓ Apply</span>
+        <span class="ui-mock-btn">✎</span>
+        <span class="ui-mock-btn">✕</span>
+      </div>
+    </div>
+    <div class="ui-mock-card">
+      <div class="ui-mock-card-head">
+        <span class="ui-mock-type-pill purple">Edit AI context</span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-1); font-weight: 500; margin-top: 4px;">Note on Race: exclude sprint races by default</div>
+      <div class="ui-mock-card-body">A chat revealed sprint races should be excluded from most "race" questions unless the user asks explicitly.</div>
+      <div class="ui-mock-card-actions">
+        <span class="ui-mock-btn ui-mock-btn-primary">✓ Apply</span>
+        <span class="ui-mock-btn">✎</span>
+        <span class="ui-mock-btn">✕</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVALS -->
+<div class="section" id="evals">
+  <h2>Evals</h2>
+  <p>A dataset of questions with expected answers, plus runs that execute every test case against the current ontology. Add a test case directly from the bottom of any chat with "Add as test case", or create one from scratch in this section.</p>
+</div>
+
+<div style="margin-top:12px; margin-bottom: 28px;">
+  <div class="summary-row">
+    <dt>Test Cases</dt>
+    <dd>A question plus its expected answer. The expected answer can be a value or a reference SQL query. Since the underlying data may change, the eval focuses on whether the generated query is right, not whether it returns a specific number.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Runs</dt>
+    <dd>A full run across every test case. Review each one's plan, the generated SQL, and the verdict (passed / failed). Use runs to track ontology quality over time.</dd>
+  </div>
+</div>
+
+<div class="ui-mock">
+  <div class="ui-mock-tabs">
+    <div class="ui-mock-tab">Test Cases<span class="ui-mock-tab-count">12</span></div>
+    <div class="ui-mock-tab active">Runs</div>
+  </div>
+  <div class="ui-mock-page-header" style="padding: 8px 14px;">
+    <span class="ui-mock-page-header-sub">4 runs</span>
+    <span class="ui-mock-page-btn">▶ Run evaluation</span>
+  </div>
+  <table class="ui-mock-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th class="right">Accuracy</th>
+        <th class="right">Tests</th>
+        <th>Version</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Apr 23, 11:45</td>
+        <td><span class="ui-mock-status-badge completed">Completed</span></td>
+        <td class="mono right">92%</td>
+        <td class="right" style="color: var(--text-3);">12</td>
+        <td style="color: var(--text-3); font-size: 0.72rem;">v2.4.0</td>
+        <td style="color: var(--text-3);">›</td>
+      </tr>
+      <tr>
+        <td>Apr 20, 15:20</td>
+        <td><span class="ui-mock-status-badge completed">Completed</span></td>
+        <td class="mono right">83%</td>
+        <td class="right" style="color: var(--text-3);">12</td>
+        <td style="color: var(--text-3); font-size: 0.72rem;">v2.3.2</td>
+        <td style="color: var(--amber);">⚠</td>
+      </tr>
+      <tr>
+        <td>Apr 18, 10:30</td>
+        <td><span class="ui-mock-status-badge completed">Completed</span></td>
+        <td class="mono right">75%</td>
+        <td class="right" style="color: var(--text-3);">10</td>
+        <td style="color: var(--text-3); font-size: 0.72rem;">v2.3.0</td>
+        <td style="color: var(--text-3);">›</td>
+      </tr>
+      <tr>
+        <td>Apr 15, 18:00</td>
+        <td><span class="ui-mock-status-badge completed">Completed</span></td>
+        <td class="mono right">60%</td>
+        <td class="right" style="color: var(--text-3);">10</td>
+        <td style="color: var(--text-3); font-size: 0.72rem;">v2.2.5</td>
+        <td style="color: var(--text-3);">›</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABLES -->
+<div class="section" id="tables">
+  <h2>Tables</h2>
+  <p>The Tables view shows the schema Cassis sees: every table with its columns, row counts, and the ontology objects mapped to it. Useful for seeing exactly what the ontology is built on top of.</p>
+</div>
+
+<div class="ui-mock">
+  <div class="ui-mock-split ui-mock-split-tables">
+    <div class="ui-mock-list" style="padding: 0; display: flex; flex-direction: column; min-height: 360px;">
+      <div style="padding: 10px 10px 8px;">
+        <div class="ui-mock-list-search">Search tables…</div>
+      </div>
+      <div style="flex: 1;">
+        <div class="ui-mock-table-row">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">circuits</span></span>
+          <span class="ui-mock-table-row-count">77</span>
+        </div>
+        <div class="ui-mock-table-row">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">constructors</span></span>
+          <span class="ui-mock-table-row-count">212</span>
+        </div>
+        <div class="ui-mock-table-row active">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">drivers</span></span>
+          <span class="ui-mock-table-row-count">859</span>
+        </div>
+        <div class="ui-mock-table-row">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">lap_times</span></span>
+          <span class="ui-mock-table-row-count">575K</span>
+        </div>
+        <div class="ui-mock-table-row">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">races</span></span>
+          <span class="ui-mock-table-row-count">1.1K</span>
+        </div>
+        <div class="ui-mock-table-row">
+          <span class="ui-mock-col-icon">▦</span>
+          <span><span class="ui-mock-table-row-schema">public.</span><span class="ui-mock-table-row-name">results</span></span>
+          <span class="ui-mock-table-row-count">26.5K</span>
+        </div>
+        <div class="ui-mock-item-more" style="padding: 8px 12px;">+ 9 more</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; min-width: 0;">
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-dim);">
+        <div style="font-size: 1rem; font-weight: 600; color: var(--text-1);"><span style="color: var(--text-3); font-weight: 400;">public.</span>drivers</div>
+        <div class="ui-mock-obj-card">
+          <span style="color: var(--text-3);">▣</span>
+          <span><span class="ui-mock-obj-card-title">Driver</span><span class="ui-mock-obj-card-desc" style="margin-left: 8px;">Formula 1 drivers who have competed in races</span></span>
+        </div>
+      </div>
+      <div style="padding: 8px 16px; border-bottom: 1px solid var(--border-dim); font-size: 0.8rem; font-weight: 500;">Columns (10)</div>
+      <div style="display: grid; grid-template-columns: 170px 1fr; flex: 1; min-height: 260px;">
+        <div class="ui-mock-col-list">
+          <div class="ui-mock-col-row active">
+            <span class="ui-mock-col-icon pk">⚷</span>
+            <span>driver_id</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">S</span>
+            <span>driver_ref</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">N</span>
+            <span>number</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">S</span>
+            <span>code</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">S</span>
+            <span>forename</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">S</span>
+            <span>surname</span>
+          </div>
+          <div class="ui-mock-col-row">
+            <span class="ui-mock-col-icon">D</span>
+            <span>dob</span>
+          </div>
+          <div style="padding: 5px 12px; font-size: 0.7rem; color: var(--text-3);">+ 3 more</div>
+        </div>
+        <div style="padding: 14px 18px;">
+          <div style="font-weight: 500; color: var(--text-1); font-size: 0.9rem;">driver_id</div>
+          <div style="font-family: var(--mono); font-size: 0.76rem; color: var(--text-3); margin-bottom: 10px;">integer</div>
+          <div style="margin-bottom: 12px;">
+            <span class="ui-mock-col-badge pk">Primary Key</span>
+            <span class="ui-mock-col-badge notnull">Not Null</span>
+          </div>
+          <div style="border: 1px solid var(--border-dim); border-radius: 4px; padding: 10px 12px;">
+            <div style="font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 4px;">Property</div>
+            <div style="font-size: 0.82rem; font-weight: 500; color: var(--text-1);">Driver ID</div>
+            <div style="font-size: 0.74rem; color: var(--text-3); margin-top: 2px;">Unique identifier for the driver</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CTA -->
+<div class="section cta-section">
+  <h2>Want to try Cassis?</h2>
+  <p>Access is limited to selected design partners today. Leave your email to be notified when it opens up.</p>
+  <a href="https://getcassis.com/" target="_blank" rel="noopener" class="cta-button">Stay tuned</a>
+</div>
+
+</div><!-- .content -->
+</div><!-- .main -->
+
+<script>
+(() => {
+  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  const navLinks = Array.from(document.querySelectorAll('.side-nav a'));
+  const anchorByHash = new Map();
+  navLinks.forEach(l => {
+    const href = l.getAttribute('href') || '';
+    const [file, anchor] = href.split('#');
+    if (anchor && (file === currentFile || file === '')) {
+      anchorByHash.set(anchor, l);
+    }
+  });
+  const sections = Array.from(anchorByHash.keys())
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  function updateActive() {
+    let current = null;
+    for (const s of sections) {
+      if (s.getBoundingClientRect().top <= 140) current = s.id;
+    }
+    if (!current && sections.length) current = sections[0].id;
+    navLinks.forEach(l => l.classList.remove('active'));
+    if (current && anchorByHash.get(current)) {
+      anchorByHash.get(current).classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const toggle = document.querySelector('.nav-toggle');
+  const sidebar = document.querySelector('.side-nav');
+  const backdrop = document.querySelector('.nav-backdrop');
+  function setNavOpen(open) {
+    sidebar.classList.toggle('open', open);
+    backdrop.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  toggle.addEventListener('click', () => setNavOpen(!sidebar.classList.contains('open')));
+  backdrop.addEventListener('click', () => setNavOpen(false));
+  sidebar.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A' && window.innerWidth <= 900) setNavOpen(false);
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) setNavOpen(false);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cassis | Documentation</title>
+<link rel="icon" href="https://framerusercontent.com/images/qxyuuxvSpKwbRiJxK7cHNcrPoc.png" type="image/png">
+<link rel="apple-touch-icon" href="https://framerusercontent.com/images/hP9oQHwYPN7PsB64pmx4s8oV0xo.png">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-lOkKd34JNi-LNFswJd_9L.js" data-domain="getcassis.com"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+  plausible('pageview', { u: 'https://getcassis.com/docs' })
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFAF9;
+  --bg-raised: #FFFFFF;
+  --bg-card: #F5F5F3;
+  --bg-inset: #EEEEEB;
+  --border: #DDDDD8;
+  --border-dim: #E8E8E4;
+  --text-1: #1A1A1A;
+  --text-2: #5C5C5C;
+  --text-3: #8C8C8C;
+  --accent: #7C5CBF;
+  --accent-soft: rgba(124, 92, 191, 0.06);
+  --accent-mid: rgba(124, 92, 191, 0.12);
+  --accent-border: rgba(124, 92, 191, 0.2);
+  --accent-text: #6B4FA8;
+  --red: #C93C37;
+  --red-soft: rgba(201, 60, 55, 0.06);
+  --amber: #A07318;
+  --amber-soft: rgba(160, 115, 24, 0.06);
+  --amber-border: rgba(160, 115, 24, 0.12);
+  --green: #357A38;
+  --green-soft: rgba(53, 122, 56, 0.06);
+  --blue: #2E6FBA;
+  --blue-soft: rgba(46, 111, 186, 0.06);
+  --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --serif: 'Newsreader', Georgia, serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+  --brand: 'DM Serif Display', serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--text-1); font-family: var(--sans); }
+
+/* NAV */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; padding: 0 24px; height: 56px;
+  background: rgba(250,250,249,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-dim);
+  justify-content: space-between;
+}
+.nav-left { display: flex; align-items: center; gap: 12px; }
+.top-nav .logo { font-family: var(--brand); font-size: 1.25rem; font-weight: 400; letter-spacing: 0.02em; color: #111110; text-decoration: none; }
+.nav-toggle {
+  display: none; background: transparent; border: 0; padding: 6px;
+  cursor: pointer; color: var(--text-2); border-radius: 4px;
+  align-items: center; justify-content: center;
+}
+.nav-toggle:hover { color: var(--text-1); background: var(--bg-inset); }
+.nav-toggle svg { display: block; }
+.nav-backdrop {
+  position: fixed; inset: 56px 0 0 0; background: rgba(26,26,26,0.3);
+  z-index: 95; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.nav-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-family: "DM Sans", sans-serif; font-size: 14px; color: var(--text-2);
+  text-decoration: none; letter-spacing: 0.02em; line-height: 1em; transition: color 0.15s;
+}
+.nav-link:hover { color: #111110; }
+.nav-cta {
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.88px;
+  text-transform: uppercase; color: #FAFAF8; text-decoration: none;
+  padding: 7px 16px; background: #1A1A1A; border-radius: 4px;
+  line-height: 16px; height: 30px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.nav-cta:hover { background: var(--text-2); }
+
+/* SIDEBAR */
+.side-nav {
+  position: fixed; top: 56px; left: 0; bottom: 0; width: 220px;
+  background: var(--bg-card); border-right: 1px solid var(--border-dim);
+  overflow-y: auto; padding: 16px 0; z-index: 100;
+  transition: transform 0.2s ease;
+}
+.side-nav .nav-group {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3);
+  padding: 14px 18px 4px;
+}
+.side-nav .nav-group:first-child { padding-top: 6px; }
+.side-nav a {
+  display: block; padding: 4px 18px 4px 22px; font-size: 0.8rem;
+  color: var(--text-2); text-decoration: none; transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+.side-nav a:hover { color: var(--text-1); }
+.side-nav a.active { color: var(--accent-text); font-weight: 500; border-left-color: var(--accent); background: var(--accent-soft); }
+.side-nav a.sub { padding-left: 30px; font-size: 0.75rem; color: var(--text-3); }
+.side-nav a.sub::before { content: "→ "; }
+
+/* MAIN */
+.main { margin-left: 220px; margin-top: 56px; }
+.content { max-width: 760px; margin: 0 auto; padding: 48px 48px 120px; }
+
+/* HERO */
+.hero { margin-bottom: 56px; }
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 400; line-height: 1.2; color: var(--text-1);
+  letter-spacing: -0.01em; margin-bottom: 16px;
+}
+.hero p { font-size: 0.95rem; font-weight: 300; line-height: 1.7; color: var(--text-2); max-width: 600px; }
+.hero p + p { margin-top: 6px; }
+
+/* SECTION */
+.section { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border-dim); }
+.section-label {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
+}
+.section h2 {
+  font-family: var(--serif); font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+  font-weight: 400; line-height: 1.3; color: var(--text-1); margin-bottom: 8px;
+}
+.section > p { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; margin-bottom: 28px; max-width: 600px; }
+.subsection { margin-top: 40px; padding-top: 0; border-top: none; }
+.subsection h2 {
+  font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 400; line-height: 1.3; color: var(--text-1); margin-bottom: 6px;
+}
+.subsection > p { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; margin-bottom: 24px; max-width: 600px; }
+
+/* SUMMARY ROW */
+.summary-row {
+  display: grid; grid-template-columns: 200px 1fr; gap: 0 24px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-dim); font-size: 0.85rem;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row dt { font-weight: 500; color: var(--text-1); }
+.summary-row dd { color: var(--text-2); margin: 0; line-height: 1.6; }
+
+/* NAV CARDS */
+.nav-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+.nav-card {
+  display: block; text-decoration: none; padding: 20px 22px;
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: 6px; transition: all 0.15s;
+}
+.nav-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(124, 92, 191, 0.08); }
+.nav-card-label {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+}
+.nav-card-title {
+  font-family: var(--serif); font-size: 1.15rem; color: var(--text-1);
+  margin-bottom: 8px; line-height: 1.3;
+}
+.nav-card-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.6; }
+
+/* CTA */
+.cta-section { text-align: center; padding-top: 56px; padding-bottom: 16px; }
+.cta-section h2 {
+  font-family: var(--serif); font-size: 1.4rem; font-weight: 400;
+  color: var(--text-1); margin-bottom: 10px;
+}
+.cta-section p { font-size: 0.88rem; color: var(--text-2); margin-bottom: 24px; }
+.cta-button {
+  display: inline-block; padding: 12px 28px; background: var(--text-1);
+  color: var(--bg-raised); font-family: var(--mono); font-size: 0.75rem;
+  letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  border-radius: 4px; transition: all 0.15s;
+}
+.cta-button:hover { background: var(--text-2); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-flex; }
+  .side-nav { transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.08); }
+  .side-nav.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .content { padding: 24px 20px 60px; }
+  .summary-row { grid-template-columns: 1fr; gap: 2px 0; }
+  .nav-cards { grid-template-columns: 1fr; }
+}
+@media (min-width: 901px) {
+  .nav-backdrop { display: none; }
+}
+@media (max-width: 420px) {
+  .nav-link { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-left">
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <a href="https://getcassis.com/" class="logo">Cassis</a>
+  </div>
+  <div class="nav-links">
+    <a href="https://getcassis.com/blog" class="nav-link">Blog</a>
+    <a href="index.html" class="nav-link">Docs</a>
+    <a href="https://getcassis.com/" target="_blank" rel="noopener" class="nav-cta">Stay tuned</a>
+  </div>
+</nav>
+
+<div class="nav-backdrop" aria-hidden="true"></div>
+
+<nav class="side-nav">
+  <div class="nav-group">Overview</div>
+  <a href="index.html#top">Introduction</a>
+  <a href="index.html#what-is-ontology">What is an ontology?</a>
+  <a href="index.html#how-it-works">How it works</a>
+  <a href="index.html#pick-interface">Pick your interface</a>
+
+  <div class="nav-group">Web app</div>
+  <a href="app.html#top">Getting started</a>
+  <a href="app.html#chat">Chat</a>
+  <a href="app.html#ontology">Ontology</a>
+  <a href="app.html#suggestions">Suggestions</a>
+  <a href="app.html#evals">Evals</a>
+  <a href="app.html#tables">Tables</a>
+
+  <div class="nav-group">MCP server</div>
+  <a href="mcp.html#top">Introduction</a>
+  <a href="mcp.html#connecting">Connecting</a>
+  <a href="mcp.html#tools">Tools</a>
+  <a href="mcp.html#ping" class="sub">Test connection</a>
+  <a href="mcp.html#list-projects" class="sub">List projects</a>
+  <a href="mcp.html#ask-question" class="sub">Ask</a>
+  <a href="mcp.html#limits">Limits and errors</a>
+</nav>
+
+<div class="main">
+<div class="content">
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <h1>Introduction to the Cassis data intelligence layer</h1>
+  <p>Cassis reads your data environment, builds a structured layer of business meaning on top of your data (the ontology), and lets anyone or any agent ask business questions in natural language. Every answer is grounded in the ontology, comes with the SQL that produced it, and carries full provenance.</p>
+  <p>The ontology sharpens with every use, as every correction and clarification from chat feeds back into the definitions.</p>
+  <p>You can use Cassis in two ways: through the web app, where you chat with your data and curate the ontology, or through the MCP server, which exposes the same engine to AI agents in Claude Code, Claude Desktop, Cursor, and any other MCP client.</p>
+  <p>Access is limited to selected design partners today. Leave your email at <a href="https://getcassis.com/" target="_blank" rel="noopener" style="color: var(--accent-text);">getcassis.com</a> to be notified when it opens up.</p>
+</div>
+
+
+<!-- WHAT IS AN ONTOLOGY -->
+<div class="section" id="what-is-ontology">
+  <h2>What is an ontology?</h2>
+  <p>An ontology is a structured representation of how your business thinks about its data: entities, relationships, metrics, dimensions, and the business logic and context behind each one. It sits between your raw warehouse tables and whoever is asking questions.</p>
+  <p>It's not a metrics file or a data catalog. Those define individual calculations or document what exists. An ontology captures what things mean in your specific context, how they connect, and their full provenance: origin, authorship, and edit history for every definition.</p>
+</div>
+
+
+<!-- HOW IT WORKS -->
+<div class="section" id="how-it-works">
+  <h2>How it works</h2>
+</div>
+
+<div style="margin-top:12px;">
+  <div class="summary-row">
+    <dt>Reads your environment</dt>
+    <dd>Connects to your dbt project, warehouse schema, and documentation. Combines all of them to infer definitions.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Builds a structured ontology</dt>
+    <dd>Objects, properties, links, and business context. Each carries the source it came from so you can trace a definition back to a dbt model, a SQL column, or a piece of docs.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Tracks provenance</dt>
+    <dd>Every definition records where it came from. An edit history captures who changed what, when, and why.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Improves through use</dt>
+    <dd>Every question asked, every ambiguity clarified, every correction made feeds back. The ontology gets sharper as a side effect of normal work.</dd>
+  </div>
+  <div class="summary-row">
+    <dt>Serves humans and agents</dt>
+    <dd>The same engine powers the web app and the MCP server. Humans and AI agents query the same ontology, with the same grounding, and get the same auditable answers.</dd>
+  </div>
+</div>
+
+
+<!-- PICK YOUR INTERFACE -->
+<div class="section" id="pick-interface">
+  <h2>Pick your interface</h2>
+  <p>Cassis ships two interfaces on top of the same engine. Most teams use both.</p>
+</div>
+
+<div class="nav-cards">
+  <a href="app.html" class="nav-card">
+    <div class="nav-card-label">For humans</div>
+    <div class="nav-card-title">Using the web app</div>
+    <div class="nav-card-desc">Chat with your data in natural language, inspect the proposed query plan before running it, and curate the ontology as you go. Five sections: Chat, Ontology, Suggestions, Evals, Tables.</div>
+  </a>
+  <a href="mcp.html" class="nav-card">
+    <div class="nav-card-label">For agents</div>
+    <div class="nav-card-title">Using the MCP server</div>
+    <div class="nav-card-desc">A hosted MCP server that exposes the same grounded query engine. Connect from Claude Code, Claude Desktop, Cursor, or any custom agent. Three tools today: ping, list_projects, ask_question.</div>
+  </a>
+</div>
+
+
+<!-- CTA -->
+<div class="section cta-section">
+  <h2>Interested?</h2>
+  <p>We're building the data intelligence layer. Sign up to hear from us first.</p>
+  <a href="https://getcassis.com/" target="_blank" rel="noopener" class="cta-button">Stay tuned</a>
+</div>
+
+</div><!-- .content -->
+</div><!-- .main -->
+
+<script>
+(() => {
+  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  const navLinks = Array.from(document.querySelectorAll('.side-nav a'));
+  const anchorByHash = new Map();
+  navLinks.forEach(l => {
+    const href = l.getAttribute('href') || '';
+    const [file, anchor] = href.split('#');
+    if (anchor && (file === currentFile || file === '')) {
+      anchorByHash.set(anchor, l);
+    }
+  });
+  const sections = Array.from(anchorByHash.keys())
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  function updateActive() {
+    let current = null;
+    for (const s of sections) {
+      if (s.getBoundingClientRect().top <= 140) current = s.id;
+    }
+    if (!current && sections.length) current = sections[0].id;
+    navLinks.forEach(l => l.classList.remove('active'));
+    if (current && anchorByHash.get(current)) {
+      anchorByHash.get(current).classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  const toggle = document.querySelector('.nav-toggle');
+  const sidebar = document.querySelector('.side-nav');
+  const backdrop = document.querySelector('.nav-backdrop');
+  function setNavOpen(open) {
+    sidebar.classList.toggle('open', open);
+    backdrop.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  toggle.addEventListener('click', () => setNavOpen(!sidebar.classList.contains('open')));
+  backdrop.addEventListener('click', () => setNavOpen(false));
+  sidebar.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A' && window.innerWidth <= 900) setNavOpen(false);
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) setNavOpen(false);
+  });
+})();
+</script>
+
+</body>
+</html>
